@@ -87,6 +87,10 @@ To edit Tiers, simply change the tier number, for example.
   [6] = "I",
 ```
 
+This will then make the addon check and use spells in the following order.
+
+III, IV, V, VI, II, I
+
 
 
 
