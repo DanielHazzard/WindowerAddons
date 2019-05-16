@@ -25,6 +25,37 @@ local knownMP_monsters = S{ "Apex Crab" }
 
 local AssistedPlayer = "" -- MAKE SURE TO EDIT THIS
 
+burstMagic = {
+  -- LEVEL 3  and 4
+  ["radiance"] = "Thunder",
+  ["light"] = "Thunder",
+  ["umbra"] = "Blizzard",
+  ["darkness"] = "Blizzard",
+  -- LEVEL 2
+  ["gravitation"] = "Stone",
+  ["fragmentation"] = "Thunder",
+  ["distortion"] = "Blizzard",
+  ["fusion"] = "Fire",
+  -- LEVEL 1
+  ["compression"] = "Aspir",
+  ["liquefaction"] = "Fire",
+  ["induration"] = "Blizzard",
+  ["reverberation"] = "Water",
+  ["transfixion"] = "Banish",
+  ["scission"] = "Stone",
+  ["detonation"] = "Aero",
+  ["impaction"] = "Thunder",
+}
+
+tierOrder = {
+  [1] = "VI",
+  [2] = "V",
+  [3] = "IV",
+  [4] = "III",
+  [5] = "II",
+  [6] = "I",
+}
+
 -- ---------------------------------------------------- --
 
 function CheckIfBursting( )
@@ -58,39 +89,6 @@ skillchains = {
   [301] = 'impaction', [398] = 'impaction',
   [767] = 'radiance', [769] = 'radiance',
   [770] = 'umbra', [768] = 'umbra',
-}
-
---  BURST ELEMENT TABLE
-
-burstMagic = {
-  -- LEVEL 3  and 4
-  ["radiance"] = "Thunder",
-  ["light"] = "Thunder",
-  ["umbra"] = "Blizzard",
-  ["darkness"] = "Blizzard",
-  -- LEVEL 2
-  ["gravitation"] = "Stone",
-  ["fragmentation"] = "Thunder",
-  ["distortion"] = "Blizzard",
-  ["fusion"] = "Fire",
-  -- LEVEL 1
-  ["compression"] = "Aspir",
-  ["liquefaction"] = "Fire",
-  ["induration"] = "Blizzard",
-  ["reverberation"] = "Water",
-  ["transfixion"] = "Banish",
-  ["scission"] = "Stone",
-  ["detonation"] = "Aero",
-  ["impaction"] = "Thunder",
-}
-
-tierOrder = {
-  [1] = "VI",
-  [2] = "V",
-  [3] = "IV",
-  [4] = "III",
-  [5] = "II",
-  [6] = "I",
 }
 
 function BuffActive( BuffID )
