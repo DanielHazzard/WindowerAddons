@@ -21,7 +21,11 @@ local owned_abilitys = windower.ffxi.get_abilities( )
 
 local knownMP_monsters = S{ "Apex Crab" }
 
+-- USER SETTINGS MAKE SURE TO EDIT -------------------- --
+
 local AssistedPlayer = "" -- MAKE SURE TO EDIT THIS
+
+-- ---------------------------------------------------- --
 
 function CheckIfBursting( )
   if player.main_job == "RDM" or player.main_job == "BLM" or player.main_job == "SCH" or player.main_job == "GEO" or player.main_job == "NIN" then
