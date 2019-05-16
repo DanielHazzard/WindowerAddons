@@ -1,11 +1,13 @@
-# AutoBurst Windower Addon
-## Automatically Bursts when it reads a SKILLCHAIN packet
+## AutoBurst Windower Addon
+### Automatically Bursts when it reads a SKILLCHAIN packet
 
-### SET UP
+#### SET UP
 
 Place the Folder AutoBurst inside the Windower/Addons/ directory should look similar too
 
-`Windower/
+```
+Windower/
      Addons/
           AutoBurst
-               AutoBurst.lua`
+               AutoBurst.lua
+               ```
