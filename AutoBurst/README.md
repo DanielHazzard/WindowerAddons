@@ -10,4 +10,4 @@ Windower/
      Addons/
           AutoBurst
                AutoBurst.lua
-               ```
+```
