@@ -14,13 +14,16 @@ Windower/
                AutoBurst.lua
 ```
 
-Now before loading, you must make a simple change to the LUA, this will be updated to include commands and by the time you use this, this may already be implemented. 
+Upon loading, to get the best out of AutoBurst you must set an "AssistedPlayer" this is the person whose target will be used to nuke.
 
-Open the AutoBurst.lua file inside of either a coding program or a notepad program, you'll be looking for the area markey USERS SETTINGS when you find this area you'll want to edite the AssistedPlayer variable this is as simple as placing the characters name between the "'s, for example.
+Simply type either:
+```
+//ab assist NAME
+or
+//autoburst assist NAME
+```
 
-```
-local AssistedPlayer = "JohnDoe"
-```
+If typing in the Windower console remove the two /
 
 Advanced users can also change the element to be used with skillchains and the tier order. See more info below.
 
