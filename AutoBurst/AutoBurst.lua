@@ -178,9 +178,9 @@ function castSpell(spell, burst)
   windower.add_to_chat(1, ('\31\200\31\05Burst located:\31\200\31\207 '.. firstToUpper(burst) .." Attempting cast: \31\200\31\05"..spell..'\31\200\31\207 '))
 
   if target ~= nil and target.is_npc then
-    windower.send_command("wait 2; input /ma "..spell.." <t>")
+    windower.send_command('wait 2; input /ma "'..spell..'" <t>')
   else
-    windower.send_command("wait 2; input /ma "..spell.." <bt>")
+    windower.send_command('wait 2; input /ma "'..spell..'" <bt>')
   end
 end
 
