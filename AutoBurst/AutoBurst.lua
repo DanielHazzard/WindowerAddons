@@ -249,6 +249,16 @@ windower.register_event( 'incoming chunk', function( id, data )
 end
 end)
 
+windower.register_event('addon command', function(input, ...)
+local args = {...}
+if args ~= nil then
+  local cmd = string.lower(input)
+  if cmd == "assist" then
+    AssistedPlayer = args[1]
+  end
+end
+end)
+
 windower.register_event( 'action', function ( data )
 player = windower.ffxi.get_player( )
 if data.category == 3 or data.category == 4 or data.category == 11 or data.category == 13 then
