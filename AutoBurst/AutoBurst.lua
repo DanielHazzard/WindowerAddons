@@ -159,7 +159,7 @@ function CanUseSpell( spellName )
   else -- IS NOT A JOB POINT SPELL
     if spell.levels[player.main_job_id] >= player.main_job_level then -- YOU ARE THE REQUIRED LEVEL OR ABOVE IT
       if windower.ffxi.get_spells( )[spell.id] then -- YOU POSSESS THE SPELL IE YOU USED A SCROLL TO LEARN IT OR SPENT MERIT POINTS
-        if player.mp > spellData.mp_cost and spell_recasts( spell.recast_id ) == 0 then -- RECAST IS AVAILABLE AND YOU HAVE THE REQUIRED MP
+        if player.mp > spell.mp_cost and spell_recasts( spell.recast_id ) == 0 then -- RECAST IS AVAILABLE AND YOU HAVE THE REQUIRED MP
           return true
         end
       end
