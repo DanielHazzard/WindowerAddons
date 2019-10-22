@@ -13,6 +13,8 @@ require( 'strings' )
 local enable_Bursting = false
 local isCasting = false
 
+local DebugEnabled = false
+
 local player = windower.ffxi.get_player( )
 local spell_recasts = windower.ffxi.get_spell_recasts( )
 local ability_recasts = windower.ffxi.get_ability_recasts( )
@@ -59,7 +61,7 @@ tierOrder = {
 -- ---------------------------------------------------- --
 
 function CheckIfBursting( )
-     if player.main_job == "RDM" or player.main_job == "BLM" or player.main_job == "SCH" or player.main_job == "GEO" or player.main_job == "NIN" then
+     if player.main_job == "RDM" or player.main_job == "BLM" or player.main_job == "SCH" or player.main_job == "GEO" then
           enable_Bursting = true
      else
           enable_Bursting = false
@@ -197,8 +199,11 @@ function run_burst(skillchain)
 
      CheckIfBursting( )
 
+     if DebugEnabled then windower.add_to_chat(207, "DEBUG: Burst located. "..skillchain) end
+
      if (AssistedPlayer ~= "") then
           windower.send_command( 'input /assist '..AssistedPlayer )
+          if DebugEnabled then windower.add_to_chat(207, "DEBUG: Assist enabled.") end
           coroutine.sleep(1)
      end
 
@@ -225,12 +230,12 @@ function run_burst(skillchain)
      else
           for i, v in ipairs(tierOrder) do
                if v == "I" then
-                    if CanUseSpell( generated_spell ) == true and SpellRecast(generated_spell) == 0 then
+                    if CanUseSpell( generated_spell ) == true and SpellRecast(generated_spell) == true then
                          completed_Spell = generated_spell
                          break
                     end
                else
-                    if CanUseSpell( generated_spell.." "..v ) == true and SpellRecast(generated_spell) == 0 then
+                    if CanUseSpell( generated_spell.." "..v ) == true and SpellRecast(generated_spell) == true then
                          completed_Spell = generated_spell.." "..v
                          break
                     end
@@ -264,6 +269,10 @@ if args ~= nil then
      local cmd = string.lower(input)
      if cmd == "assist" then
           AssistedPlayer = args[1]
+     elseif cmd == "verify" then
+          windower.add_to_chat(207, "DEBUG: Running check")
+          DebugEnabled = true
+          run_burst("light")
      end
 end
 end)
@@ -277,7 +286,6 @@ if data.category == 3 or data.category == 4 or data.category == 11 or data.categ
                if data.targets[1].actions ~= nil then
                     local action = data.targets[1].actions[1]
                     if action.has_add_effect then
-                        -- windower.add_to_chat(207, "Skillchain:  "..skillchains[action.add_effect_message] .. " "..action.add_effect_message)
                          run_burst( skillchains[action.add_effect_message] )
                     end
                end
