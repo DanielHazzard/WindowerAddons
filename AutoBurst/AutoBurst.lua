@@ -277,7 +277,7 @@ if data.category == 3 or data.category == 4 or data.category == 11 or data.categ
                if data.targets[1].actions ~= nil then
                     local action = data.targets[1].actions[1]
                     if action.has_add_effect then
-                         windower.add_to_chat(207, "Skillchain:  "..skillchains[action.add_effect_message] .. " "..action.add_effect_message)
+                        -- windower.add_to_chat(207, "Skillchain:  "..skillchains[action.add_effect_message] .. " "..action.add_effect_message)
                          run_burst( skillchains[action.add_effect_message] )
                     end
                end
