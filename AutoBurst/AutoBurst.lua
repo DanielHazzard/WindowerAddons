@@ -13,7 +13,7 @@ require( 'strings' )
 local enable_Bursting = false
 local isCasting = false
 
-local DebugEnabled = false
+local DebugEnabled = false -- DO NOT EDIT THIS
 
 local player = windower.ffxi.get_player( )
 local spell_recasts = windower.ffxi.get_spell_recasts( )
