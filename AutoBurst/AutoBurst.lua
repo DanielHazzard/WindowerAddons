@@ -4,7 +4,7 @@ _addon.version = '1.0'
 _addon_description = ''
 _addon.commands = {'ab', 'autoburst'}
 
-// 19 NOv 2019 - Added PET aknowledgement
+-- 19 NOv 2019 - Added PET aknowledgement
 
 -- CUSTOM VARIABLES
 local packets = require("packets")
