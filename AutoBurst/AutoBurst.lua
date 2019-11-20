@@ -365,7 +365,7 @@ windower.register_event('action', function(data)
     end
 end)
 
-windower.register_event('mpp change', function(new, old)
+windower.register_event('mp change', function(new, old)
     if Aspir_NoBurst == true and player.vitals.mp <= Aspir_MPAmount then
         RunAssistCmd()
         target = windower.ffxi.get_mob_by_target('t')
