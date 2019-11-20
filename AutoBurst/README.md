@@ -4,7 +4,12 @@
 ---
 
 #### UPDATES AND MODIFICATIONS
-**version 1.3**
+##### version 1.3
+- Added an option to enable MP recovery spells regardless of skillchain when possible.
+- Added a customisable variable *AspirMPAmount* to specify when you want ASPIR used, default 300, will attempt MP Recovery when MP at or below 300
+- Added automatic ASSIST selection when assistTarget left blank, or set at none of party.
+  - Will scan the party for a member that is engaged and use that to /assist to the target.
+
 
 
 #### SET UP
