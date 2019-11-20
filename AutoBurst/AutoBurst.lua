@@ -4,25 +4,13 @@ _addon.version = '1.0'
 _addon_description = ''
 _addon.commands = {'ab', 'autoburst'}
 
--- 19 NOv 2019 - Added PET aknowledgement
-
 -- CUSTOM VARIABLES
 local packets = require("packets")
 local res = require("resources")
 require('strings')
 
-local isCasting = false
-
-local DebugEnabled = false
-
-local player = windower.ffxi.get_player()
-local party_info = windower.ffxi.get_party_info()
-local party = windower.ffxi.get_party()
-
-local knownMP_monsters = S{"Apex Crab"}
-
 -- USER SETTINGS MAKE SURE TO EDIT -------------------- --
-local AssistedPlayer = "Blelant" -- MAKE SURE TO EDIT THIS
+local AssistedPlayer = "" -- IF LEFT BLANK IT WILL SCAN THE PARTY FOR A MEMBER ENGAGED AND USE THAT
 
 burstMagic = {
         -- LEVEL 3  and 4
@@ -62,7 +50,29 @@ BurstJobs = S{
     'GEO'
 }
 
+-- ASPIR WILL BE USED WHEN CURRENT MP IS BELOW THE DEFINED AMOUNT
+Aspir_MPAmount = 300
+
+-- ATTEMPT ASPIR WHEN POSSIBLE AND WHEN NOT BUSY (IE. NOT BURSTING)
+Aspir_NoBurst = true
+
+local knownMP_monsters = S{"Apex Crab"}-- ADD NAMES BY ADDING A COMMA AFTER THE PREVIOUS THEN ADDED THE NAME IN QUOTATION MARKS
+
 -- ---------------------------------------------------- --
+local isCasting = false
+
+local DebugEnabled = false
+
+local player = windower.ffxi.get_player()
+local party_info = windower.ffxi.get_party_info()
+local party = windower.ffxi.get_party()
+
+local Party_Indexes = {
+    'p0', 'p1', 'p2', 'p3', 'p4', 'p5',
+    'p6', 'p7', 'p8', 'p9', 'p10', 'p11',
+    'p12', 'p13', 'p14', 'p15', 'p16', 'p17'
+}
+
 function debugMSG(message)
     if DebugEnabled == true then
         windower.add_to_chat(1, ('\31\200\31\05Debug: \31\200\31\207 ' .. message))
@@ -209,7 +219,11 @@ end
 
 function castSpell(spell, burst)
     target = windower.ffxi.get_mob_by_target('t')
-    windower.add_to_chat(1, ('\31\200\31\05Burst located:\31\200\31\207 ' .. firstToUpper(burst) .. " Attempting cast: \31\200\31\05" .. spell .. '\31\200\31\207 '))
+    if burst == "none" then
+        windower.add_to_chat(1, ('\31\200\31\05Attempting MP Recovery:\31\200\31\207 ' .. spell))
+    else
+        windower.add_to_chat(1, ('\31\200\31\05Burst located:\31\200\31\207 ' .. firstToUpper(burst) .. " Attempting cast: \31\200\31\05" .. spell .. '\31\200\31\207 '))
+    end
     if target ~= nil and target.is_npc then
         windower.send_command('wait 2; input /ma "' .. spell .. '" <t>')
     else
@@ -217,20 +231,48 @@ function castSpell(spell, burst)
     end
 end
 
-function run_burst(skillchain)
-    if CheckIfBursting() == true and not isCasting == true then -- IF PLAYER IS ONE OF THE CORRECT JOBS THEN ENABLE BURSTING
-        -- IF ENABLED ASSIST THE SELECTED PLAYER
-        if (AssistedPlayer ~= "") then
+function GrabAssistTarget()
+
+    for i = 0, 17 do
+        grabbedMember = party[Party_Indexes[i]]
+        if grabbedMember then
+            player_entity = windower.ffxi.get_mob_by_name(grabbedMember.name)
+            if player_entity and player_entity.status == 1 then
+                return player_entity.name
+            end
+        end
+    end
+    return "none"
+end
+
+function RunAssistCmd()
+    -- IF ENABLED ASSIST THE SELECTED PLAYER
+    if (AssistedPlayer ~= "" or AssistedPlayer == "none" or AssistedPlayer == "party") then
+        player_entity = windower.ffxi.get_mob_by_name(AssistedPlayer)
+        if player_entity and player_entity.status == 1 then
             if DebugEnabled then debugMSG("Assist enabled, targetting " .. AssistedPlayer) end
             windower.send_command('input /assist ' .. AssistedPlayer)
             coroutine.sleep(1)
         end
+    else -- ASSIST ISN'T SET SO FIND ONE
+        AssistName = GrabAssistTarget()
+        if AssistName ~= "none" then
+            if DebugEnabled then debugMSG("Assist enabled, targetting " .. AssistName) end
+            windower.send_command('input /assist ' .. AssistName)
+            coroutine.sleep(1)
+        end
+    end
+end
+
+function run_burst(skillchain)
+    if CheckIfBursting() == true and not isCasting == true then -- IF PLAYER IS ONE OF THE CORRECT JOBS THEN ENABLE BURSTING
+        RunAssistCmd()
         -- GRAB THE TARGET INFO NEEDED FOR THE ASPIR CHECK
         target = windower.ffxi.get_mob_by_target('t')
         -- CANCEL THE RUN BURST ID SKILLCHAIN IS SOMEHOW EMPTY
-        if skillchain == nil then return end
+        if skillchain == nil or target == nil then return end
         -- FIRST RUN THE CHECKS TO SEE IF YOU NEED MP AND ASPIR CAN RECOVER MP
-        if S{'darkness', 'umbra', 'compression', 'gravitation'}:contains(skillchain) and player.vitals.mpp < 20 and target ~= nil and knownMP_monsters:contains(target.name) then
+        if S{'darkness', 'umbra', 'compression', 'gravitation'}:contains(skillchain) and player.vitals.mp <= Aspir_MPAmount and target ~= nil and knownMP_monsters:contains(target.name) and BuffActive(1) ~= true then
             windower.add_to_chat(1, ('\31\200\31\05Low MP Notice: \31\200\31\207 Attempting to recover MP with Aspir.'))
             if CanUseSpell("Aspir III") and SpellRecast("Aspir III") == true then
                 completed_Spell = "Aspir III"
@@ -270,7 +312,6 @@ windower.register_event('incoming chunk', function(id, data)
             isCasting = true
             if action_message["Target 1 Action 1 Message"] == 0 then
                 isCasting = false
-                isBusy = Action_Delay
             end
         end
     end
@@ -291,11 +332,7 @@ windower.register_event('addon command', function(input, ...)
 end)
 
 function PartyPet(actorData)
-    Party_Indexes = {
-        'p0', 'p1', 'p2', 'p3', 'p4', 'p5',
-        'p6', 'p7', 'p8', 'p9', 'p10', 'p11',
-        'p12', 'p13', 'p14', 'p15', 'p16', 'p17'
-    }
+
     for i = 0, 17 do
         grabbedMember = party[Party_Indexes[i]]
         if grabbedMember then
@@ -323,6 +360,26 @@ windower.register_event('action', function(data)
                         run_burst(skillchains[action.add_effect_message])
                     end
                 end
+            end
+        end
+    end
+end)
+
+windower.register_event('mpp change', function(new, old)
+    if Aspir_NoBurst == true and player.vitals.mp <= Aspir_MPAmount then
+        RunAssistCmd()
+        target = windower.ffxi.get_mob_by_target('t')
+        -- CANCEL THE RUN BURST ID SKILLCHAIN IS SOMEHOW EMPTY
+        if target ~= nil and knownMP_monsters:contains(target.name) and BuffActive(1) ~= true then
+            if CanUseSpell("Aspir III") and SpellRecast("Aspir III") == true then
+                completed_Spell = "Aspir III"
+            elseif CanUseSpell("Aspir II") and SpellRecast("Aspir II") == true then
+                completed_Spell = "Aspir II"
+            elseif CanUseSpell("Aspir") and SpellRecast("Aspir") == true then
+                completed_Spell = "Aspir"
+            end
+            if completed_Spell ~= "" then
+                castSpell(completed_Spell, 'none')
             end
         end
     end
