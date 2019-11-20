@@ -1,6 +1,6 @@
 _addon.name = 'Auto_Burst'
 _addon.author = 'Daniel_H'
-_addon.version = '1.0'
+_addon.version = '1.3'
 _addon_description = ''
 _addon.commands = {'ab', 'autoburst'}
 
